@@ -4,4 +4,6 @@ error_chain! {
         Req(::reqwest::Error);
         Io(::std::io::Error);
     }
+
+    errors { InvalidAnswerError }
 }

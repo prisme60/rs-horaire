@@ -33,20 +33,24 @@ pub fn sncf(train_station: &str, departure:bool) -> Result<Vec<TimeLine>> {
     url.push_str(&sens);
     let mut resp = reqwest::get(&url)?;
 
-    assert!(resp.status().is_success());
+    //assert!(resp.status().is_success());
+    if resp.status().is_success() {
+        let json: JsonSncf = resp.json()?;
 
-    let json : JsonSncf = resp.json()?;
+        //println!("{:?}", json);
 
-    println!("{:?}", json);
+        // finding all instances of our class of interest
+        for train in json.trains {
+            let mission = train.num;
+            let heure = train.heure;
+            let destination = train.origdest;
+            let voie = train.voie;
 
-    // finding all instances of our class of interest
-    for train in json.trains {
-        let mission = train.num;
-        let heure = train.heure;
-        let destination = train.origdest;
-        let voie = train.voie;
-
-        vec.push(TimeLine::new(&mission, &heure, &destination, &voie));
+            vec.push(TimeLine::new(&mission, &heure, &destination, &voie));
+        }
+        Ok(vec)
     }
-    Ok(vec)
+    else {
+        Err(ErrorKind::InvalidAnswerError.into())
+    }
 }
