@@ -21,10 +21,8 @@ use source::sncf::sncf;
 
 //pub use errors::*;
 
-
 fn main() {
-    display_time_lines(transilien("PSL").unwrap_or( Vec::<TimeLine>::new()).iter());
+    display_time_lines(transilien("PSL").unwrap_or(Vec::<TimeLine>::new()).iter());
     display_time_lines(ratp("A", "Auber").unwrap_or(Vec::<TimeLine>::new()).iter());
     display_time_lines(sncf("PSL", true).unwrap_or(Vec::<TimeLine>::new()).iter());
 }
-
