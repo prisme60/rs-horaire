@@ -21,23 +21,31 @@ pub fn ratp(rer_line: &str, train_station: &str) -> Result<Vec<TimeLine>> {
         .query(&params)
         .send()?;
 
-    assert!(resp.status().is_success());
+    //assert!(resp.status().is_success());
+    if resp.status().is_success() {
+        let document = Document::from_read(resp)?;
 
-    let document = Document::from_read(resp)?;
+        // finding all instances of our class of interest
+        for node in document.find(Class("body-rer")) {
+            let mission = node.find(Class("js-horaire-show-mission"))
+                .next()
+                .ok_or(ErrorKind::MissingField("mission".to_string()))?;
+            let heure = node.find(Class("heure-wrap"))
+                .next()
+                .ok_or(ErrorKind::MissingField("heure".to_string()))?;
+            let destination = node.find(Class("terminus-wrap"))
+                .next()
+                .ok_or(ErrorKind::MissingField("destination".to_string()))?;
 
-    // finding all instances of our class of interest
-    for node in document.find(Class("body-rer")) {
-        let mission = node.find(Class("js-horaire-show-mission")).next().unwrap();
-        let heure = node.find(Class("heure-wrap")).next().unwrap();
-        let destination = node.find(Class("terminus-wrap")).next().unwrap();
-        let voie = "";
-
-        vec.push(TimeLine::new(
-            &mission.text(),
-            &heure.text(),
-            &destination.text(),
-            &voie,
-        ));
+            vec.push(TimeLine::new(
+                &mission.text(),
+                &heure.text(),
+                &destination.text(),
+                "",
+            ));
+        }
+        Ok(vec)
+    } else {
+        Err(ErrorKind::InvalidAnswerError.into())
     }
-    Ok(vec)
 }

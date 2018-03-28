@@ -4,5 +4,12 @@ error_chain! {
         Io(::std::io::Error);
     }
 
-    errors { InvalidAnswerError }
+    errors {
+        InvalidAnswerError
+
+        MissingField(t: String) {
+            description("Missing field in the answer")
+            display("name of missing field: '{}'", t)
+        }
+    }
 }
