@@ -2,7 +2,7 @@ extern crate reqwest;
 extern crate select;
 
 use select::document::Document;
-use select::predicate::{Class};
+use select::predicate::Class;
 use timelines::TimeLine;
 use errors::*;
 
@@ -10,7 +10,8 @@ pub fn transilien(train_station: &str) -> Result<Vec<TimeLine>> {
     let mut vec = Vec::<TimeLine>::new();
     let params = [("idOrigin", train_station)];
     let client = reqwest::Client::new();
-    let resp = client.get("https://transilien.mobi/train/result")
+    let resp = client
+        .get("https://transilien.mobi/train/result")
         .query(&params)
         .send()?;
 
@@ -25,7 +26,12 @@ pub fn transilien(train_station: &str) -> Result<Vec<TimeLine>> {
         let destination = node.find(Class("garearrivee")).next().unwrap();
         let voie = node.find(Class("voie")).next().unwrap();
 
-        vec.push(TimeLine::new(&mission.text(),&heure.text(), &destination.text(), &voie.text()));
+        vec.push(TimeLine::new(
+            &mission.text(),
+            &heure.text(),
+            &destination.text(),
+            &voie.text(),
+        ));
     }
     Ok(vec)
 }
