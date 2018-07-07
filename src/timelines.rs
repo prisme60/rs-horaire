@@ -20,9 +20,12 @@ impl TimeLine {
             track: String::from(track.trim())
         }
     }
-}
 
-impl TimeLine {
+    pub fn get_mission_string(&self) -> &String     { &self.mission }
+    pub fn get_time_string(&self) -> &String        { &self.time }
+    pub fn get_destination_string(&self) -> &String { &self.destination }
+    pub fn get_track_string(&self) -> &String { &self.track }
+
     pub fn to_html_table_line(&self) -> String {
         format!("<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",self.mission, self.time, self.track, self.destination)
     }
@@ -37,7 +40,7 @@ impl TimeLine {
         for val in time.split(':') {
             match u32::from_str(val) {
                 Ok(val) => {hms[index] = val;},
-                err => {return Err("No given time");}
+                Err(_) => {return Err("No given time");}
             };
             index += 1;
             if index > hms.len() {
