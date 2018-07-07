@@ -27,7 +27,7 @@ pub fn sncf(train_station: &str, departure: bool) -> Result<Vec<TimeLine>> {
     // http://www.gares-sncf.com/fr/train-times/PSL/departure
     // http://www.gares-sncf.com/fr/train-times/PSL/arrival
     let sens = if departure { "/departure" } else { "/arrival" };
-    let mut url: String = String::from("http://www.gares-sncf.com/fr/train-times/");
+    let mut url: String = String::from("https://www.gares-sncf.com/fr/train-times/");
     url.push_str(&train_station);
     url.push_str(&sens);
     let mut resp = reqwest::get(&url)?;
