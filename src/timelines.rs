@@ -1,4 +1,6 @@
 use std::fmt;
+use std::str::FromStr;
+use chrono::prelude::*;
 
 pub struct TimeLine {
     mission: String,
@@ -21,6 +23,27 @@ impl TimeLine {
 impl TimeLine {
     pub fn to_html_table_line(&self) -> String {
         format!("<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",self.mission, self.time, self.track, self.destination)
+    }
+
+    pub fn get_time(&self) -> DateTime<Local> {
+        TimeLine::get_time_static(self.time.as_str())
+    }
+
+    pub fn get_time_static(time : &str) -> DateTime<Local> {
+        let mut hms = [0u32; 3];
+        let mut index = 0;
+        for val in time.split(':') {
+            hms[index] = u32::from_str(val).unwrap();
+            index += 1;
+            if index > hms.len() {
+                break;
+            }
+        }
+        Local::today().and_hms(hms[0], hms[1], hms[2])
+    }
+
+    pub fn get_remaining_seconds(&self) -> i64 {
+        (self.get_time() - Local::now()).num_seconds()
     }
 }
 
