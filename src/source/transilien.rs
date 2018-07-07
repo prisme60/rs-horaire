@@ -34,11 +34,15 @@ pub fn transilien(train_station: &str) -> Result<Vec<TimeLine>> {
                 .next()
                 .ok_or(ErrorKind::MissingField("voie".to_string()))?;
 
+            // Remove "Dir :" in the destination
+            let destination_with_dir = destination.text();
+            let destination_no_dir = destination_with_dir.splitn(2,"Dir : ").last().unwrap();
+
             vec.push(TimeLine::new(
                 &mission.text(),
                 &heure.text(),
-                &destination.text(),
-                &voie.text(),
+                &destination_no_dir,
+                &voie.text()
             ));
         }
         Ok(vec)

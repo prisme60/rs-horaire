@@ -5,17 +5,17 @@ use chrono::prelude::*;
 pub struct TimeLine {
     mission: String,
     time: String,
-    track: String,
     destination: String,
+    track: String,
 }
 
 impl TimeLine {
-    pub fn new(mission: &str, time: &str, track: &str, destination: &str) -> Self {
+    pub fn new(mission: &str, time: &str, destination: &str, track: &str) -> Self {
         TimeLine {
             mission: String::from(mission.trim()),
             time: String::from(time.trim()),
-            track: String::from(track.trim()),
             destination: String::from(destination.trim()),
+            track: String::from(track.trim())
         }
     }
 }
@@ -57,7 +57,7 @@ impl fmt::Display for TimeLine {
         write!(
             f,
             "{} | {} | {} | {}",
-            self.mission, self.time, self.track, self.destination
+            self.mission, self.time, self.destination, self.track
         )
     }
 }
@@ -82,4 +82,16 @@ where
     for time_line in time_lines {
         println!("{}", time_line);
     }
+}
+
+pub fn first_time_line_for_destination<'a, I>(time_lines: I, destination : &str) -> Option<&'a TimeLine>
+    where
+        I: Iterator<Item = &'a TimeLine>,
+{
+    for time_line in time_lines {
+        if time_line.destination == destination {
+            return Some(&time_line);
+        }
+    }
+    None
 }
