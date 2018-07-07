@@ -1,6 +1,8 @@
 use std::fmt;
 use std::str::FromStr;
 use chrono::prelude::*;
+use std::time;
+
 
 pub struct TimeLine {
     mission: String,
@@ -25,25 +27,42 @@ impl TimeLine {
         format!("<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",self.mission, self.time, self.track, self.destination)
     }
 
-    pub fn get_time(&self) -> DateTime<Local> {
+    pub fn get_time(&self) -> Result<DateTime<Local>,&str> {
         TimeLine::get_time_static(self.time.as_str())
     }
 
-    pub fn get_time_static(time : &str) -> DateTime<Local> {
+    pub fn get_time_static(time : &str) -> Result<DateTime<Local>, &str> {
         let mut hms = [0u32; 3];
         let mut index = 0;
         for val in time.split(':') {
-            hms[index] = u32::from_str(val).unwrap();
+            match u32::from_str(val) {
+                Ok(val) => {hms[index] = val;},
+                err => {return Err("No given time");}
+            };
             index += 1;
             if index > hms.len() {
                 break;
             }
         }
-        Local::today().and_hms(hms[0], hms[1], hms[2])
+        Ok(Local::today().and_hms(hms[0], hms[1], hms[2]))
     }
 
     pub fn get_remaining_seconds(&self) -> i64 {
-        (self.get_time() - Local::now()).num_seconds()
+        self.get_seconds_difference_from_reference(&Local::now())
+    }
+
+    pub fn get_seconds_difference_from_reference(&self, reference_date_time : &DateTime<Local>) -> i64 {
+        match self.get_time() {
+            Ok(time_val) => (time_val - *reference_date_time).num_seconds(),
+            Err(_) => 24*60*60 // 1 day
+        }
+    }
+
+    pub fn get_difference_from_reference(&self, reference_date_time : &DateTime<Local>) -> time::Duration {
+        match self.get_time() {
+            Ok(time_val) => (time_val - *reference_date_time).to_std().unwrap(),
+            Err(_) => time::Duration::new(24*60*60, 0)
+        }
     }
 }
 
