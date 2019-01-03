@@ -1,10 +1,8 @@
-extern crate reqwest;
-extern crate select;
-
+use reqwest;
 use select::document::Document;
 use select::predicate::Class;
-use timelines::TimeLine;
-use errors::*;
+use crate::timelines::TimeLine;
+use crate::errors::*;
 
 pub fn ratp(rer_line: &str, train_station: &str) -> Result<Vec<TimeLine>> {
     let mut vec = Vec::<TimeLine>::new();

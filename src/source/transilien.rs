@@ -3,8 +3,8 @@ extern crate select;
 
 use select::document::Document;
 use select::predicate::{Class, Predicate};
-use timelines::TimeLine;
-use errors::*;
+use crate::timelines::TimeLine;
+use crate::errors::*;
 
 pub fn transilien(train_station: &str) -> Result<Vec<TimeLine>> {
     let params = [("departure", train_station)];

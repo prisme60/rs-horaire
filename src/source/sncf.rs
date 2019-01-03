@@ -1,7 +1,6 @@
-extern crate reqwest;
-
-use timelines::TimeLine;
-use errors::*;
+use reqwest;
+use crate::timelines::TimeLine;
+use crate::errors::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JsonSncf {
