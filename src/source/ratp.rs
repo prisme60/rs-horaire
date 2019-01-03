@@ -28,15 +28,15 @@ pub fn ratp(rer_line: &str, train_station: &str) -> Result<Vec<TimeLine>> {
             let mission = node
                 .find(Class("js-horaire-show-mission"))
                 .next()
-                .ok_or(ErrorKind::MissingField("mission".to_string()))?;
+                .ok_or_else(|| ErrorKind::MissingField("mission".to_string()))?;
             let heure = node
                 .find(Class("heure-wrap"))
                 .next()
-                .ok_or(ErrorKind::MissingField("heure".to_string()))?;
+                .ok_or_else(|| ErrorKind::MissingField("heure".to_string()))?;
             let destination = node
                 .find(Class("terminus-wrap"))
                 .next()
-                .ok_or(ErrorKind::MissingField("destination".to_string()))?;
+                .ok_or_else(|| ErrorKind::MissingField("destination".to_string()))?;
 
             vec.push(TimeLine::new(
                 &mission.text(),

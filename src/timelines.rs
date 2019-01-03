@@ -46,8 +46,7 @@ impl TimeLine {
 
     pub fn get_time_static(time: &str) -> Result<DateTime<Local>, &str> {
         let mut hms = [0u32; 3];
-        let mut index = 0;
-        for val in time.split(':') {
+        for (index, val) in time.split(':').enumerate() {
             match u32::from_str(val) {
                 Ok(val) => {
                     hms[index] = val;
@@ -56,7 +55,6 @@ impl TimeLine {
                     return Err("No given time");
                 }
             };
-            index += 1;
             if index > hms.len() {
                 break;
             }
@@ -110,7 +108,7 @@ where
 {
     let mut strings = time_lines.fold(
         String::from("<html><header/><body><table>"),
-        |acc, ref mut time_line| acc + &format!("{}", time_line.to_html_table_line()),
+        |acc, ref mut time_line| acc + &time_line.to_html_table_line().to_string(),
     );
     strings.pop();
     strings.push_str("</table></body></html>");

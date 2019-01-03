@@ -34,19 +34,19 @@ pub fn transilien_params(params: &[(&str, &str)]) -> Result<Vec<TimeLine>> {
             let mission = node
                 .find(Class("code"))
                 .next()
-                .ok_or(ErrorKind::MissingField("mission".to_string()))?;
+                .ok_or_else(|| ErrorKind::MissingField("mission".to_string()))?;
             let heure = node
                 .find(Class("hour"))
                 .next()
-                .ok_or(ErrorKind::MissingField("heure".to_string()))?;
+                .ok_or_else(|| ErrorKind::MissingField("heure".to_string()))?;
             let destination = node
                 .find(Class("destination-col"))
                 .next()
-                .ok_or(ErrorKind::MissingField("destination".to_string()))?;
+                .ok_or_else(|| ErrorKind::MissingField("destination".to_string()))?;
             let voie_node = node
                 .find(Class("pathway"))
                 .next()
-                .ok_or(ErrorKind::MissingField("voie".to_string()))?;
+                .ok_or_else(|| ErrorKind::MissingField("voie".to_string()))?;
             let voie = match voie_node.find(Class("hidden-xs")).next() {
                 Some(v) => v.text(),
                 None => "".to_owned(),
