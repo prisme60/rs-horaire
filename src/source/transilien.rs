@@ -2,7 +2,7 @@ extern crate reqwest;
 extern crate select;
 
 use select::document::Document;
-use select::predicate::{Class, Predicate};
+use select::predicate::Class;
 use crate::timelines::TimeLine;
 use crate::errors::*;
 
@@ -40,10 +40,12 @@ pub fn transilien_params(params: &[(&str,&str)]) -> Result<Vec<TimeLine>> {
             let destination = node.find(Class("destination-col"))
                 .next()
                 .ok_or(ErrorKind::MissingField("destination".to_string()))?;
-            let voie = node.find(Class("pathway").child(Class("hidden-xs")))
+            let voie_node = node.find(Class("pathway"))
                 .next()
                 .ok_or(ErrorKind::MissingField("voie".to_string()))?;
-
+            let voie = match voie_node.find(Class("hidden-xs"))
+                .next()
+                { Some(v) => v.text(), None => "".to_owned()};
             // Remove "Dir :" in the destination
             let destination_with_dir = destination.text();
             let destination_no_dir = destination_with_dir.splitn(2,"Destination").last().unwrap();
@@ -52,7 +54,7 @@ pub fn transilien_params(params: &[(&str,&str)]) -> Result<Vec<TimeLine>> {
                 &mission.text(),
                 &heure.text(),
                 &destination_no_dir,
-                &voie.text()
+                &voie
             ));
         }
         Ok(vec)
