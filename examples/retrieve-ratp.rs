@@ -1,10 +1,7 @@
-#[macro_use]
-extern crate error_chain;
-extern crate horaire;
-
-use horaire::timelines::display_time_lines;
-use horaire::source::ratp::ratp;
+use error_chain::quick_main;
 use horaire::errors::*;
+use horaire::source::ratp::ratp;
+use horaire::timelines::display_time_lines;
 
 fn run() -> Result<()> {
     display_time_lines(ratp("A", "Auber")?.iter());

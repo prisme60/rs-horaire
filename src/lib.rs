@@ -11,6 +11,6 @@ extern crate chrono;
 #[macro_use]
 extern crate serde_derive;
 
-pub mod timelines;
-pub mod source;
 pub mod errors;
+pub mod source;
+pub mod timelines;

@@ -1,10 +1,10 @@
 extern crate reqwest;
 extern crate select;
 
+use crate::errors::*;
+use crate::timelines::TimeLine;
 use select::document::Document;
 use select::predicate::Class;
-use crate::timelines::TimeLine;
-use crate::errors::*;
 
 pub fn transilien(train_station: &str) -> Result<Vec<TimeLine>> {
     let params = [("departure", train_station)];
@@ -17,7 +17,7 @@ pub fn transilien_uic(train_station_uic: u32) -> Result<Vec<TimeLine>> {
     transilien_params(&params)
 }
 
-pub fn transilien_params(params: &[(&str,&str)]) -> Result<Vec<TimeLine>> {
+pub fn transilien_params(params: &[(&str, &str)]) -> Result<Vec<TimeLine>> {
     let mut vec = Vec::<TimeLine>::new();
     let client = reqwest::Client::new();
     let resp = client
@@ -31,30 +31,38 @@ pub fn transilien_params(params: &[(&str,&str)]) -> Result<Vec<TimeLine>> {
 
         // finding all instances of our class of interest
         for node in document.find(Class("result-main-line")) {
-            let mission = node.find(Class("code"))
+            let mission = node
+                .find(Class("code"))
                 .next()
                 .ok_or(ErrorKind::MissingField("mission".to_string()))?;
-            let heure = node.find(Class("hour"))
+            let heure = node
+                .find(Class("hour"))
                 .next()
                 .ok_or(ErrorKind::MissingField("heure".to_string()))?;
-            let destination = node.find(Class("destination-col"))
+            let destination = node
+                .find(Class("destination-col"))
                 .next()
                 .ok_or(ErrorKind::MissingField("destination".to_string()))?;
-            let voie_node = node.find(Class("pathway"))
+            let voie_node = node
+                .find(Class("pathway"))
                 .next()
                 .ok_or(ErrorKind::MissingField("voie".to_string()))?;
-            let voie = match voie_node.find(Class("hidden-xs"))
-                .next()
-                { Some(v) => v.text(), None => "".to_owned()};
+            let voie = match voie_node.find(Class("hidden-xs")).next() {
+                Some(v) => v.text(),
+                None => "".to_owned(),
+            };
             // Remove "Dir :" in the destination
             let destination_with_dir = destination.text();
-            let destination_no_dir = destination_with_dir.splitn(2,"Destination").last().unwrap();
+            let destination_no_dir = destination_with_dir
+                .splitn(2, "Destination")
+                .last()
+                .unwrap();
 
             vec.push(TimeLine::new(
                 &mission.text(),
                 &heure.text(),
                 &destination_no_dir,
-                &voie
+                &voie,
             ));
         }
         Ok(vec)

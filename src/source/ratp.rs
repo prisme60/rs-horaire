@@ -1,8 +1,8 @@
+use crate::errors::*;
+use crate::timelines::TimeLine;
 use reqwest;
 use select::document::Document;
 use select::predicate::Class;
-use crate::timelines::TimeLine;
-use crate::errors::*;
 
 pub fn ratp(rer_line: &str, train_station: &str) -> Result<Vec<TimeLine>> {
     let mut vec = Vec::<TimeLine>::new();
@@ -25,13 +25,16 @@ pub fn ratp(rer_line: &str, train_station: &str) -> Result<Vec<TimeLine>> {
 
         // finding all instances of our class of interest
         for node in document.find(Class("body-rer")) {
-            let mission = node.find(Class("js-horaire-show-mission"))
+            let mission = node
+                .find(Class("js-horaire-show-mission"))
                 .next()
                 .ok_or(ErrorKind::MissingField("mission".to_string()))?;
-            let heure = node.find(Class("heure-wrap"))
+            let heure = node
+                .find(Class("heure-wrap"))
                 .next()
                 .ok_or(ErrorKind::MissingField("heure".to_string()))?;
-            let destination = node.find(Class("terminus-wrap"))
+            let destination = node
+                .find(Class("terminus-wrap"))
                 .next()
                 .ok_or(ErrorKind::MissingField("destination".to_string()))?;
 

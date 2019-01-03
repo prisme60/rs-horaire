@@ -1,6 +1,6 @@
-use reqwest;
-use crate::timelines::TimeLine;
 use crate::errors::*;
+use crate::timelines::TimeLine;
+use reqwest;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JsonSncf {
@@ -9,9 +9,10 @@ pub struct JsonSncf {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TimeLineSncf {
-    origdest: String,                            //	"LE HAVRE"
-    num: String,                                 //	"3132"
-    #[serde(rename = "type")] type_name: String, //	"INTERCITES"
+    origdest: String, //	"LE HAVRE"
+    num: String,      //	"3132"
+    #[serde(rename = "type")]
+    type_name: String, //	"INTERCITES"
     picto: String, //	"/sites/default/files/styles/picto_train_board/public/field_taxo_trans_picto_horaires/2015-03/30_sncf_nb.png"
     voie: String,  //	"22"
     voie_attr: String, //	""
