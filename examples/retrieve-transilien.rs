@@ -4,7 +4,7 @@ use horaire::source::transilien::transilien;
 use horaire::timelines::{display_time_lines, first_time_line_for_destination};
 
 fn run() -> Result<()> {
-    let time_lines = transilien("PONTOISE")?;
+    let time_lines = transilien("GARE DE PARIS SAINT-LAZARE")?;
     let destination = "PONTOISE";
     display_time_lines(time_lines.iter());
     if !time_lines.is_empty() {
