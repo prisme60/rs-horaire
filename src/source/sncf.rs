@@ -1,25 +1,24 @@
-use crate::errors::*;
-use crate::timelines::TimeLine;
+use crate::{errors::*, timelines::TimeLine};
 use reqwest;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct JsonSncf {
     trains: Vec<TimeLineSncf>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct TimeLineSncf {
     origdest: String, //	"LE HAVRE"
     num: String,      //	"3132"
     #[serde(rename = "type")]
     type_name: String, //	"INTERCITES"
-    picto: String, //	"/sites/default/files/styles/picto_train_board/public/field_taxo_trans_picto_horaires/2015-03/30_sncf_nb.png"
-    voie: String,  //	"22"
+    picto: String,    //	"/sites/default/files/styles/picto_train_board/public/field_taxo_trans_picto_horaires/2015-03/30_sncf_nb.png"
+    voie: String,     //	"22"
     voie_attr: String, //	""
-    heure: String, //	"21:41"
-    etat: String,  //	""
-    retard: String, //	""
-    infos: String, //	""
+    heure: String,    //	"21:41"
+    etat: String,     //	""
+    retard: String,   //	""
+    infos: String,    //	""
 }
 
 pub fn sncf(train_station: &str, departure: bool) -> Result<Vec<TimeLine>> {

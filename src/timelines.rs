@@ -66,20 +66,14 @@ impl TimeLine {
         self.get_seconds_difference_from_reference(&Local::now())
     }
 
-    pub fn get_seconds_difference_from_reference(
-        &self,
-        reference_date_time: &DateTime<Local>,
-    ) -> i64 {
+    pub fn get_seconds_difference_from_reference(&self, reference_date_time: &DateTime<Local>) -> i64 {
         match self.get_time() {
             Ok(time_val) => (time_val - *reference_date_time).num_seconds(),
             Err(_) => 24 * 60 * 60, // 1 day
         }
     }
 
-    pub fn get_difference_from_reference(
-        &self,
-        reference_date_time: &DateTime<Local>,
-    ) -> time::Duration {
+    pub fn get_difference_from_reference(&self, reference_date_time: &DateTime<Local>) -> time::Duration {
         match self.get_time() {
             Ok(time_val) => (time_val - *reference_date_time).to_std().unwrap(),
             Err(_) => time::Duration::new(24 * 60 * 60, 0),
@@ -94,11 +88,7 @@ impl fmt::Display for TimeLine {
         // stream: `f`. Returns `fmt::Result` which indicates whether the
         // operation succeeded or failed. Note that `write!` uses syntax which
         // is very similar to `println!`.
-        write!(
-            f,
-            "{} | {} | {} | {}",
-            self.mission, self.time, self.destination, self.track
-        )
+        write!(f, "{} | {} | {} | {}", self.mission, self.time, self.destination, self.track)
     }
 }
 
@@ -106,10 +96,9 @@ pub fn get_time_lines_html<'a, I>(time_lines: I) -> String
 where
     I: Iterator<Item = &'a TimeLine>,
 {
-    let mut strings = time_lines.fold(
-        String::from("<html><header/><body><table>"),
-        |acc, ref mut time_line| acc + &time_line.to_html_table_line().to_string(),
-    );
+    let mut strings = time_lines.fold(String::from("<html><header/><body><table>"), |acc, ref mut time_line| {
+        acc + &time_line.to_html_table_line().to_string()
+    });
     strings.pop();
     strings.push_str("</table></body></html>");
     strings
@@ -125,10 +114,7 @@ where
     }
 }
 
-pub fn first_time_line_for_destination<'a, I>(
-    time_lines: I,
-    destination: &str,
-) -> Option<&'a TimeLine>
+pub fn first_time_line_for_destination<'a, I>(time_lines: I, destination: &str) -> Option<&'a TimeLine>
 where
     I: Iterator<Item = &'a TimeLine>,
 {
