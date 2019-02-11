@@ -1,15 +1,13 @@
 use crate::{errors::*, timelines::TimeLine};
 use reqwest::{self, header};
-use select::{document::Document, predicate::Class};
-use std::{time::Duration, collections::HashMap};
-use serde::ser::{Serialize, SerializeStruct, Serializer};
-use serde_json::json;    
+use std::{time::Duration};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonRequestTransilien<'a> {
     departure: &'a str,
     uic_departure : &'a str,
+    uic_arrival : &'a str,
     pmr: bool
 }
 
@@ -40,18 +38,13 @@ struct NextTrain {
     //disruptions	[…]
 }
 
-pub fn transilien(train_station: &str) -> Result<Vec<TimeLine>> {
-    let json = json!({"departure": train_station, "pmr": false});
-    transilien_params(&json)
+pub fn transilien(train_station: &str, train_station_uic: u32) -> Result<Vec<TimeLine>> {
+    let uic = train_station_uic.to_string();
+    let json_transilien_req = JsonRequestTransilien {departure: train_station, uic_departure: uic.as_str(), uic_arrival: "", pmr: false};
+    transilien_params(&json_transilien_req)
 }
 
-pub fn transilien_uic(train_station_uic: u32) -> Result<Vec<TimeLine>> {
-    let train_station_uic_str = train_station_uic.to_string();
-    let json = json!({"uic_departure": train_station_uic_str, "pmr": false});
-    transilien_params(&json)
-}
-
-pub fn transilien_params(params: &serde_json::Value) -> Result<Vec<TimeLine>> {
+fn transilien_params(params: &JsonRequestTransilien) -> Result<Vec<TimeLine>> {
     let mut vec = Vec::<TimeLine>::new();
 
     // HTTP/1.1 200 OK
