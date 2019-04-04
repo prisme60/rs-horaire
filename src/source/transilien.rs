@@ -27,7 +27,7 @@ struct NextTrain {
     mode_transport_enum: String, // RER
     line_transport_enum: String, // RER_C
     code_mission: String, // MONA
-    cancelled:bool,
+    canceled:bool,
     delayed: bool,
     departure_time:String, //	16:28
     destination_mission:String, // MASSY PALAISEAU
