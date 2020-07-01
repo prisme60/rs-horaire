@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 reqwest = "0.9"
-select = "0.4"
+select = "0.5"
 error-chain = "0.12"
 
 serde="1.0"
